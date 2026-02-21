@@ -1,0 +1,44 @@
+CMake Error at /home/brooqs/esp/esp-idf/tools/cmake/component.cmake:225 (message):
+  CMake Warning (dev) at build_properties.temp.cmake:8:
+
+    Syntax Warning in cmake code at column 106
+
+
+
+    Argument not separated from preceding token by whitespace.
+
+  Call Stack (most recent call first):
+
+    /home/brooqs/esp/esp-idf/tools/cmake/scripts/component_get_requirements.cmake:3 (include)
+
+  This warning is for project developers.  Use -Wno-dev to suppress it.
+
+
+
+  onulmaz: Bir git deposu veya (/ bağlama noktasına kadar olan üstü)
+  değil
+
+  Dosya sistemi sınırında duruluyor (GIT_DISCOVERY_ACROSS_FILESYSTEM
+  ayarlanmamış).
+
+  CMake Error at
+  /home/brooqs/projects/esp-s3-box-lite/esp32_openclaw_client/components/esp-adf/CMakeLists.txt:5
+  (add_definitions):
+
+    add_definitions command is not scriptable
+
+  Call Stack (most recent call first):
+
+    /home/brooqs/esp/esp-idf/tools/cmake/scripts/component_get_requirements.cmake:107 (include)
+    /home/brooqs/esp/esp-idf/tools/cmake/scripts/component_get_requirements.cmake:127 (__component_get_requirements)
+
+
+
+
+
+Call Stack (most recent call first):
+  /home/brooqs/esp/esp-idf/tools/cmake/build.cmake:586 (__component_get_requirements)
+  /home/brooqs/esp/esp-idf/tools/cmake/project.cmake:710 (idf_build_process)
+  CMakeLists.txt:8 (project)
+
+
