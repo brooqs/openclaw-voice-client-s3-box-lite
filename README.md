@@ -58,11 +58,40 @@ The ESP32 client requires a Node.js intermediary server to handle chunked HTTP b
     ```bash
     npm install
     ```
-3.  **Configure API Keys**: Edit the bundled bash scripts (`stt_eleven.sh` and `tts_esp32.sh`) and insert your real ElevenLabs API keys where `YOUR_ELEVENLABS_API_KEY_HERE` placeholders are marked.
-4.  Launch the Relay Bridge:
+3.  **Configure API Keys**: Open `bridge.js` and insert your actual ElevenLabs credentials into the `YOUR_ELEVENLABS_API_KEY_HERE` and `YOUR_ELEVENLABS_VOICE_ID_HERE` placeholders at the top of the file. Alternatively, you can pass them securely via environment variables (`ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`).
+4.  Test the Relay Bridge manually once to ensure audio flow is working:
     ```bash
     npm start
     ```
+
+### 💻 Running as a Background Service (Optional but Recommended)
+
+For a seamless Jarvis experience, the Voice Bridge should run persistently in the background so it automatically starts when your computer or server reboots.
+
+#### 🐧 Linux (Systemd)
+If you are running the bridge on Linux (Debian, Ubuntu, Raspberry Pi), use the provided `systemd` service file:
+
+1. Edit `openclaw-bridge.service` and insert your API keys in the `Environment=` lines. Ensure the `WorkingDirectory` matches your mapped path (e.g., `/opt/openclaw-voice-server`).
+2. Copy the file and enable the service:
+    ```bash
+    sudo cp openclaw-bridge.service /etc/systemd/system/
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now openclaw-bridge
+    ```
+3. Check status: `sudo systemctl status openclaw-bridge`
+
+#### 🍏 macOS (launchd)
+If you are running OpenClaw on a Mac, use the provided `.plist` LaunchAgent:
+
+1. Edit `com.openclaw.voicebridge.plist` and insert your API keys under the `<dict>` block. Ensure the `<key>WorkingDirectory</key>` points to your cloned repository folder.
+2. Copy the plist and load the service:
+    ```bash
+    cp com.openclaw.voicebridge.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.openclaw.voicebridge.plist
+    ```
+3. Logs will be available at `/tmp/openclaw-bridge.log`
+
+---
     *The bridge will now actively listen on port `18790` and await payloads from the ESP32.*
 
 ## ⚡ Building and Flashing
