@@ -1,0 +1,25 @@
+# CMake and build artifacts
+build/
+.cache/
+CMakeLists.txt.user
+
+# ESP-IDF specific
+sdkconfig
+sdkconfig.old
+managed_components/
+dependencies.lock
+
+# Python and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Ide and OS files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.bak
+*~
