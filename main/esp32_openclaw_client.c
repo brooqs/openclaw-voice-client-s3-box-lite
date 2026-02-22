@@ -325,8 +325,9 @@ static void audio_record_task(void *pvParameters) {
         audio_buffer = NULL;
         audio_buffer_len = 0;
       }
+      // Sleep slightly to prevent watchdog starvation while idling
+      vTaskDelay(pdMS_TO_TICKS(100));
     }
-    vTaskDelay(pdMS_TO_TICKS(500));
   }
 }
 
