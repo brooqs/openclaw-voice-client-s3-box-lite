@@ -69,10 +69,13 @@ The ESP32 client requires a Node.js intermediary server to handle chunked HTTP b
 
 Build the firmware, flash it over USB, and open the serial monitor to view exactly what your box is doing!
 
+> **⚠️ Important Note for Non-English Locale Users:**
+> If your operating system is set to a locale like Turkish (`tr_TR`), the GCC compiler's assembler may fail with `unknown opcode` errors (e.g., `rsr.WINDOWBASE`). This is caused by the assembler incorrectly downcasing characters (like 'I' to 'ı' instead of 'i'). To fix this, always force the standard English locale by prepending `LC_ALL=C` to your build commands.
+
 ```bash
-idf.py build
+LC_ALL=C idf.py build
 sudo chmod a+rw /dev/ttyACM0
-idf.py -p /dev/ttyACM0 flash monitor
+LC_ALL=C idf.py -p /dev/ttyACM0 flash monitor
 ```
 
 ## 📝 License
