@@ -11,8 +11,8 @@ fs.mkdirSync(saveDir, { recursive: true });
 
 const upload = multer({ dest: uploadDir });
 
-const STT_SCRIPT = '/root/.openclaw/workspace/stt_eleven.sh';
-const TTS_SCRIPT = '/root/.openclaw/workspace/tts_esp32.sh';
+const STT_SCRIPT = path.join(__dirname, 'stt_eleven.sh');
+const TTS_SCRIPT = path.join(__dirname, 'tts_esp32.sh');
 
 app.post('/voice', upload.single('audio'), async (req, res) => {
     try {

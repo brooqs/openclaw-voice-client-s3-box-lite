@@ -39,6 +39,32 @@ This firmware requires the official Espressif IoT Development Framework.
    - Specify the **OpenClaw Voice Endpoint URL** (e.g., `http://192.168.1.100:18790/voice`).
 6. Exit and save the configuration.
 
+## 🔌 Setting up the Node.js OpenClaw Bridge
+
+The ESP32 client requires a Node.js intermediary server to handle chunked HTTP bridging and audio format conversions efficiently before piping payloads to the actual OpenClaw LLM inference engine. This bundled server is located in the `openclaw-voice-server/` directory.
+
+### Bridge Prerequisites
+*   Node.js (`v18` or higher)
+*   `ffmpeg` installed on the host OS for real-time audio down-sampling (ensuring 16kHz optimizations).
+*   `jq` installed for JSON manipulations.
+
+### Bridge Setup
+
+1.  Navigate into the server directory:
+    ```bash
+    cd openclaw-voice-server/
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  **Configure API Keys**: Edit the bundled bash scripts (`stt_eleven.sh` and `tts_esp32.sh`) and insert your real ElevenLabs API keys where `YOUR_ELEVENLABS_API_KEY_HERE` placeholders are marked.
+4.  Launch the Relay Bridge:
+    ```bash
+    npm start
+    ```
+    *The bridge will now actively listen on port `18790` and await payloads from the ESP32.*
+
 ## ⚡ Building and Flashing
 
 Build the firmware, flash it over USB, and open the serial monitor to view exactly what your box is doing!
