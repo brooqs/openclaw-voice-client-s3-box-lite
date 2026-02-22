@@ -19,6 +19,7 @@
 #include "iot_button.h"
 #include "jarvis_image.h" // Needed for LCD Avatar
 #include "nvs_flash.h"
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -284,23 +285,40 @@ static void audio_record_task(void *pvParameters) {
       }
     } else {
       if (audio_buffer != NULL && audio_buffer_len > 0) {
-        bool has_sound = false;
-        for (size_t i = 0; i < audio_buffer_len; i++) {
-          if (audio_buffer[i] != 0x00 && audio_buffer[i] != 0xFF) {
-            has_sound = true;
-            break;
-          }
+
+        // Calculate RMS (Root Mean Square) volume to detect actual speech vs
+        // ADC static noise
+        int16_t *pcm_samples = (int16_t *)audio_buffer;
+        size_t sample_count = audio_buffer_len / 2; // 16-bit samples
+        uint64_t sum_squares = 0;
+
+        for (size_t i = 0; i < sample_count; i++) {
+          int16_t sample = pcm_samples[i];
+          sum_squares += (int64_t)sample * sample;
         }
 
-        ESP_LOGI(TAG,
-                 "Recording finished, size: %zu bytes. Valid: %s. Sending to "
-                 "OpenClaw...",
-                 audio_buffer_len, has_sound ? "YES" : "NO (SILENT)");
+        uint32_t rms_amplitude = 0;
+        if (sample_count > 0) {
+          rms_amplitude = (uint32_t)sqrt(sum_squares / sample_count);
+        }
 
-        if (has_sound) {
+        // Typical speech hits RMS > 300, background static is usually < 50
+        bool has_speech = (rms_amplitude > 150);
+
+        ESP_LOGI(TAG,
+                 "Recording finished, size: %zu bytes. Volume RMS: %lu. Speech "
+                 "detected: %s. Sending to "
+                 "OpenClaw...",
+                 audio_buffer_len, (unsigned long)rms_amplitude,
+                 has_speech ? "YES" : "NO (SILENT)");
+
+        if (has_speech) {
           send_audio_to_openclaw(audio_buffer, audio_buffer_len);
         } else {
-          ESP_LOGW(TAG, "Audio buffer empty or silent, skipping send!");
+          ESP_LOGW(TAG,
+                   "Audio buffer recorded only silence (RMS: %lu), skipping "
+                   "API send to save bandwidth!",
+                   (unsigned long)rms_amplitude);
         }
 
         heap_caps_free(audio_buffer);
